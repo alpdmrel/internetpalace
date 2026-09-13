@@ -1,5 +1,7 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
+// Astro deprecates re-exporting `z`; import it from zod directly.
+import { z } from 'zod';
 
 /**
  * Status drives grouping and the colour of the badge on cards.
