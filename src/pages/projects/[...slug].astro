@@ -1,0 +1,235 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import FigureGallery from '../../components/FigureGallery.astro';
+import ModelViewer from '../../components/ModelViewer.astro';
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const d = project.data;
+const { Content } = await render(project);
+
+const all = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const i = all.findIndex((p) => p.id === project.id);
+const prev = all[i - 1];
+const next = all[i + 1];
+---
+
+<Base title={d.title} description={d.tagline}>
+  <article>
+    <header class="wrap head">
+      <a class="back mono" href="/projects">← All projects</a>
+
+      <div class="meta">
+        <span class="badge" data-status={d.status}>{d.status.replace('-', ' ')}</span>
+        <span class="mono">{d.year}</span>
+        <span class="mono">·</span>
+        <span class="mono">{d.domain}</span>
+      </div>
+
+      <h1>{d.title}</h1>
+      <p class="tagline">{d.tagline}</p>
+
+      {
+        d.tech.length > 0 && (
+          <ul class="tags">
+            {d.tech.map((t) => (
+              <li class="tag">{t}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    {
+      d.highlights.length > 0 && (
+        <div class="wrap">
+          <ul class="highlights">
+            {d.highlights.map((h) => (
+              <li>{h}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    {
+      d.model && (
+        <div class="wrap">
+          <ModelViewer
+            src={d.model.src}
+            caption={d.model.caption}
+            explode={d.model.explode}
+            yOffset={d.model.yOffset}
+          />
+        </div>
+      )
+    }
+
+    <div class="wrap wrap-narrow prose body">
+      <Content />
+    </div>
+
+    {
+      d.figures && (
+        <div class="wrap">
+          <FigureGallery
+            slug={d.figures}
+            heading="Diagrams and built hardware"
+            intro="Figures taken from the thesis, with the captions rewritten in English. The written document itself is in Turkish."
+          />
+        </div>
+      )
+    }
+
+    <nav class="wrap pager" aria-label="Project navigation">
+      {
+        prev ? (
+          <a href={`/projects/${prev.id}`} class="pager-link">
+            <span class="mono">← Previous</span>
+            <strong>{prev.data.title}</strong>
+          </a>
+        ) : (
+          <span />
+        )
+      }
+      {
+        next && (
+          <a href={`/projects/${next.id}`} class="pager-link right">
+            <span class="mono">Next →</span>
+            <strong>{next.data.title}</strong>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .head {
+    padding-block: 2rem 0;
+  }
+
+  .back {
+    display: inline-block;
+    text-decoration: none;
+    color: var(--text-faint);
+    margin-bottom: 2rem;
+    font-size: 0.72rem;
+  }
+
+  .back:hover {
+    color: var(--accent);
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.1rem;
+  }
+
+  h1 {
+    max-width: 20ch;
+  }
+
+  .tagline {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--text-dim);
+    max-width: 58ch;
+  }
+
+  .tags {
+    margin-top: 1.6rem;
+  }
+
+  .highlights {
+    list-style: none;
+    padding: 1.3rem 1.5rem;
+    margin-top: 2.5rem;
+    display: grid;
+    gap: 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 0.97rem;
+  }
+
+  .highlights li {
+    position: relative;
+    padding-left: 1.4rem;
+    color: var(--text-dim);
+  }
+
+  .highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0.15rem;
+    top: 0.65em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  @media (min-width: 760px) {
+    .highlights {
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 2rem;
+    }
+  }
+
+  .body {
+    margin-top: 3.5rem;
+  }
+
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .pager-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    text-decoration: none;
+    color: var(--text);
+    max-width: 45%;
+  }
+
+  .pager-link.right {
+    text-align: right;
+    margin-left: auto;
+  }
+
+  .pager-link span {
+    font-size: 0.68rem;
+    color: var(--text-faint);
+  }
+
+  .pager-link strong {
+    font-weight: 550;
+    font-size: 0.98rem;
+    letter-spacing: -0.01em;
+  }
+
+  .pager-link:hover strong {
+    color: var(--accent);
+  }
+</style>

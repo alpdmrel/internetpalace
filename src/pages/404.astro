@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Not found">
+  <div class="wrap box">
+    <p class="eyebrow">Error 404</p>
+    <h1>No continuity</h1>
+    <p>
+      That page isn't on this net. It may have been renamed, or it may never have existed —
+      either way the trace ends here.
+    </p>
+    <p class="cta">
+      <a class="btn btn-primary" href="/">Back to start</a>
+      <a class="btn" href="/projects">Browse projects</a>
+    </p>
+  </div>
+</Base>
+
+<style>
+  .box {
+    padding-block: clamp(4rem, 12vw, 8rem);
+    max-width: 52ch;
+  }
+
+  p {
+    color: var(--text-dim);
+    margin-top: 1rem;
+  }
+
+  .cta {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+</style>

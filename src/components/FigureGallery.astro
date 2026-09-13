@@ -1,0 +1,294 @@
+---
+import figuresData from '../data/figures.json';
+
+interface Figure {
+  number: number;
+  title: string;
+  explanation: string;
+  src: string;
+  thumb: string;
+  width: number;
+  height: number;
+}
+
+interface Props {
+  /** Key into src/data/figures.json. */
+  slug: string;
+  heading?: string;
+  intro?: string;
+}
+
+const { slug, heading = 'Figures', intro } = Astro.props;
+const figures: Figure[] = (figuresData as Record<string, Figure[]>)[slug] ?? [];
+---
+
+{
+  figures.length > 0 && (
+    <section class="figures" aria-labelledby="figures-heading">
+      <p class="eyebrow">From the thesis</p>
+      <h2 id="figures-heading">{heading}</h2>
+      {intro && <p class="intro">{intro}</p>}
+
+      <ol class="list">
+        {figures.map((f, i) => (
+          <li class="figure">
+            <button
+              type="button"
+              class="shot"
+              data-index={i}
+              aria-label={`Open figure ${f.number}, ${f.title}, full size`}
+            >
+              <img
+                src={f.thumb}
+                alt={`Figure ${f.number} — ${f.title}`}
+                loading="lazy"
+                decoding="async"
+                width={520}
+                height={Math.round((520 * f.height) / f.width)}
+              />
+            </button>
+            <div class="caption">
+              <p class="label mono">Figure {f.number}</p>
+              <h3>{f.title}</h3>
+              <p class="explain">{f.explanation}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <dialog id="figbox" aria-label="Figure viewer">
+        <button class="close" type="button" data-close aria-label="Close viewer">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <button class="nav prev" type="button" data-prev aria-label="Previous figure">
+          <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+            <path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <figure>
+          <img id="figbox-img" src="" alt="" />
+          <figcaption id="figbox-cap" />
+        </figure>
+        <button class="nav next" type="button" data-next aria-label="Next figure">
+          <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+            <path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </dialog>
+
+      <script is:inline define:vars={{ figures }}>
+        (function () {
+          const dlg = document.getElementById('figbox');
+          const img = document.getElementById('figbox-img');
+          const cap = document.getElementById('figbox-cap');
+          if (!dlg || !img || !cap) return;
+
+          let index = 0;
+
+          function show(i) {
+            index = (i + figures.length) % figures.length;
+            const f = figures[index];
+            img.src = f.src;
+            img.alt = 'Figure ' + f.number + ' — ' + f.title;
+            cap.textContent = 'Figure ' + f.number + ' · ' + f.title;
+          }
+
+          document.querySelectorAll('.shot').forEach((el) => {
+            el.addEventListener('click', () => {
+              show(Number(el.dataset.index));
+              dlg.showModal();
+            });
+          });
+
+          dlg.querySelector('[data-close]')?.addEventListener('click', () => dlg.close());
+          dlg.querySelector('[data-prev]')?.addEventListener('click', () => show(index - 1));
+          dlg.querySelector('[data-next]')?.addEventListener('click', () => show(index + 1));
+
+          dlg.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+              e.preventDefault();
+              show(index + 1);
+            }
+            if (e.key === 'ArrowLeft') {
+              e.preventDefault();
+              show(index - 1);
+            }
+          });
+
+          dlg.addEventListener('click', (e) => {
+            if (e.target === dlg) dlg.close();
+          });
+        })();
+      </script>
+    </section>
+  )
+}
+
+<style>
+  .figures {
+    --fig-mat: #15181e;
+    margin-top: 4.5rem;
+  }
+
+  :global(html[data-theme='light']) .figures {
+    --fig-mat: #f4f5f7;
+  }
+
+  .intro {
+    color: var(--text-dim);
+    max-width: 62ch;
+    margin-top: 0.75rem;
+  }
+
+  .list {
+    list-style: none;
+    padding: 0;
+    margin-top: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .figure {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .shot {
+    display: block;
+    width: 100%;
+    padding: 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    /* The thesis figures carry their own backgrounds — some white line art,
+       some dark diagrams — so the mat follows the theme rather than forcing a
+       white slab into dark mode. */
+    background: var(--fig-mat);
+    cursor: zoom-in;
+    transition: border-color 0.18s;
+  }
+
+  .shot:hover {
+    border-color: var(--accent);
+  }
+
+  .shot img {
+    width: 100%;
+    height: auto;
+    max-height: 520px;
+    object-fit: contain;
+    margin-inline: auto;
+  }
+
+  .label {
+    color: var(--accent);
+    font-size: 0.68rem;
+  }
+
+  .caption h3 {
+    font-size: 1.1rem;
+    margin-top: 0.3rem;
+  }
+
+  .explain {
+    color: var(--text-dim);
+    font-size: 0.96rem;
+    margin-top: 0.5rem;
+    max-width: 62ch;
+  }
+
+  @media (min-width: 900px) {
+    .figure {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 2rem;
+      align-items: center;
+    }
+  }
+
+  dialog {
+    width: min(96vw, 1400px);
+    max-width: 96vw;
+    max-height: 94vh;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    color: var(--text);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  dialog::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(3px);
+  }
+
+  dialog figure {
+    margin: 0;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  dialog img {
+    max-width: 100%;
+    max-height: 80vh;
+    width: auto;
+    object-fit: contain;
+    border-radius: 6px;
+    background: var(--fig-mat, #15181e);
+    padding: 0.5rem;
+  }
+
+  figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    color: var(--text-dim);
+    text-align: center;
+  }
+
+  .close {
+    position: absolute;
+    top: 0.7rem;
+    right: 0.7rem;
+    z-index: 2;
+  }
+
+  .close,
+  .nav {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    background: color-mix(in srgb, var(--bg) 75%, transparent);
+    backdrop-filter: blur(6px);
+    color: var(--text);
+    cursor: pointer;
+  }
+
+  .close:hover,
+  .nav:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+
+  .prev {
+    left: 0.7rem;
+  }
+  .next {
+    right: 0.7rem;
+  }
+</style>

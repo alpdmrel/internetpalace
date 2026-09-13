@@ -1,0 +1,94 @@
+---
+import Base from '../layouts/Base.astro';
+import ModelViewer from '../components/ModelViewer.astro';
+---
+
+<Base
+  title="Lab"
+  description="Interactive 3D and exploded-view assemblies — the viewer that project pages will use for CAD."
+>
+  <div class="wrap head">
+    <p class="eyebrow">Lab</p>
+    <h1>Interactive assemblies</h1>
+    <p class="lede">
+      A drawing shows you what a thing looks like. An exploded view shows you how it goes
+      together — which is the part that actually matters when someone else has to build it.
+      This is the viewer the project pages use, running on a placeholder assembly until the
+      real CAD is exported.
+    </p>
+  </div>
+
+  <div class="wrap">
+    <ModelViewer demo caption="Placeholder controller stack — drag to orbit, slide to explode" height="520px" />
+  </div>
+
+  <div class="wrap wrap-narrow prose body">
+    <h2>How it works</h2>
+    <p>
+      The viewer loads glTF/GLB models and separates them along each part's own centroid axis,
+      so an assembly modelled in SOLIDWORKS and exported with one top-level object per part
+      explodes correctly without any per-model configuration.
+    </p>
+    <p>
+      three.js is code-split into its own bundle and only fetched once a viewer scrolls into
+      range, and the render loop pauses whenever the canvas is off screen. Pages without a model
+      ship no 3D code at all — which is why the rest of this site stays fast despite carrying a
+      WebGL renderer.
+    </p>
+
+    <h2>Adding a model</h2>
+    <p>
+      Drop a <code>.glb</code> into <code>public/models/</code> and add it to a project's frontmatter:
+    </p>
+    <pre><code>model:
+  src: /models/smart-coffee.glb
+  caption: Controller stack, exploded
+  explode: 1.6</code></pre>
+    <p>
+      Export each part you want to separate as its own top-level object. Nested children move
+      with their parent, so a sub-assembly that should stay together can simply be grouped.
+    </p>
+
+    <h2>Next</h2>
+    <p>
+      The plan is to bring the mechanical work onto the site properly — enclosure assemblies,
+      the curtain rail brackets, the Pi rack, and the coffee machine's touch panel, each as a
+      model you can take apart rather than a photograph of a finished object. Interactive
+      schematics and dimensioned drawings are the other half of that.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .head {
+    padding-block: clamp(2.5rem, 6vw, 4rem) 0;
+  }
+
+  .lede {
+    max-width: 62ch;
+    color: var(--text-dim);
+    margin-top: 1rem;
+    font-size: 1.03rem;
+  }
+
+  .body {
+    margin-top: 3.5rem;
+  }
+
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem 1.15rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+
+  pre code {
+    background: none;
+    border: 0;
+    padding: 0;
+    font-size: inherit;
+  }
+</style>

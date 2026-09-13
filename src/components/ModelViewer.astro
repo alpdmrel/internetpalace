@@ -1,0 +1,527 @@
+---
+/**
+ * Interactive 3D viewer with an exploded-view slider.
+ *
+ * Two modes:
+ *   <ModelViewer src="/models/thing.glb" caption="..." />   loads a glTF/GLB
+ *   <ModelViewer demo />                                    procedural demo assembly
+ *
+ * three.js is code-split into its own chunk and only fetched when a viewer
+ * actually scrolls into range, so pages without a model ship no 3D payload.
+ *
+ * To add a model to a project, drop the .glb in public/models/ and add to the
+ * project's frontmatter:
+ *
+ *   model:
+ *     src: /models/smart-coffee.glb
+ *     caption: Controller stack, exploded
+ *     explode: 1.6
+ *
+ * Exploding works on the top-level children of the loaded scene, so export
+ * each part you want to separate as its own top-level object.
+ */
+interface Props {
+  src?: string;
+  caption?: string;
+  explode?: number;
+  yOffset?: number;
+  demo?: boolean;
+  height?: string;
+}
+
+const {
+  src,
+  caption,
+  explode = 1.6,
+  yOffset = 0,
+  demo = false,
+  height = '460px',
+} = Astro.props;
+---
+
+<figure
+  class="model-viewer"
+  data-src={src}
+  data-demo={demo ? '' : undefined}
+  data-explode={explode}
+  data-y-offset={yOffset}
+  style={`--viewer-height:${height}`}
+>
+  <div class="stage">
+    <canvas></canvas>
+
+    <div class="status" data-status>
+      <span class="spinner" aria-hidden="true"></span>
+      <span data-status-text>Loading 3D view…</span>
+    </div>
+
+    <div class="hud" data-hud hidden>
+      <label class="explode">
+        <span class="mono">Exploded</span>
+        <input type="range" min="0" max="100" value="0" step="1" data-explode-input />
+      </label>
+      <button type="button" class="reset" data-reset title="Reset view">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+          <path
+            d="M4 12a8 8 0 1 1 2.4 5.7M4 18v-5h5"
+            stroke="currentColor"
+            stroke-width="2"
+            fill="none"
+            stroke-linecap="round"
+            stroke-linejoin="round"></path>
+        </svg>
+        <span class="mono">Reset</span>
+      </button>
+    </div>
+
+    <p class="hint mono" data-hint hidden>Drag to orbit · scroll to zoom</p>
+  </div>
+
+  {caption && <figcaption class="mono">{caption}</figcaption>}
+</figure>
+
+<style>
+  .model-viewer {
+    margin: 2rem 0 0;
+  }
+
+  .stage {
+    position: relative;
+    height: var(--viewer-height);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    background:
+      radial-gradient(
+        ellipse 80% 60% at 50% 0%,
+        color-mix(in srgb, var(--accent) 7%, transparent),
+        transparent 70%
+      ),
+      var(--surface);
+  }
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+  }
+
+  .status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--text-faint);
+    background: var(--surface);
+    transition: opacity 0.3s;
+  }
+
+  .status[hidden] {
+    display: none;
+  }
+
+  .spinner {
+    width: 13px;
+    height: 13px;
+    border: 2px solid var(--border-strong);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .status[data-error] .spinner {
+    display: none;
+  }
+
+  .hud {
+    position: absolute;
+    left: 0.9rem;
+    right: 0.9rem;
+    bottom: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.55rem 0.85rem;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 80%, transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .hud[hidden] {
+    display: none;
+  }
+
+  .explode {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .explode span {
+    font-size: 0.68rem;
+    white-space: nowrap;
+  }
+
+  input[type='range'] {
+    flex: 1;
+    min-width: 0;
+    accent-color: var(--accent);
+    cursor: ew-resize;
+  }
+
+  .reset {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.68rem;
+  }
+
+  .reset:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .hint {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    font-size: 0.65rem;
+    color: var(--text-faint);
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .hint[hidden] {
+    display: none;
+  }
+
+  figcaption {
+    margin-top: 0.7rem;
+    font-size: 0.7rem;
+    text-align: center;
+  }
+</style>
+
+<script>
+  import type * as THREE_NS from 'three';
+
+  type Viewer = {
+    dispose: () => void;
+  };
+
+  /** Builds a stand-in PCB assembly so the explode interaction is demonstrable
+   *  before any real CAD has been exported. */
+  function buildDemoAssembly(THREE: typeof THREE_NS): THREE_NS.Group {
+    const root = new THREE.Group();
+    const accent = 0xff9f45;
+
+    const part = (
+      geo: THREE_NS.BufferGeometry,
+      color: number,
+      y: number,
+      opts: { metal?: number; rough?: number } = {}
+    ) => {
+      const mat = new THREE.MeshStandardMaterial({
+        color,
+        metalness: opts.metal ?? 0.35,
+        roughness: opts.rough ?? 0.55,
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.y = y;
+      root.add(mesh);
+      return mesh;
+    };
+
+    // Enclosure base
+    const base = new THREE.Group();
+    const shellMat = new THREE.MeshStandardMaterial({
+      color: 0x2a3038,
+      metalness: 0.25,
+      roughness: 0.7,
+    });
+    const floor = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.18, 3.2), shellMat);
+    base.add(floor);
+    for (const [x, z, w, d] of [
+      [2.11, 0, 0.18, 3.2],
+      [-2.11, 0, 0.18, 3.2],
+      [0, 1.51, 4.4, 0.18],
+      [0, -1.51, 4.4, 0.18],
+    ] as const) {
+      const wall = new THREE.Mesh(new THREE.BoxGeometry(w, 0.55, d), shellMat);
+      wall.position.set(x, 0.36, z);
+      base.add(wall);
+    }
+    base.position.y = -0.9;
+    root.add(base);
+
+    // PCB
+    part(new THREE.BoxGeometry(3.9, 0.08, 2.8), 0x1f6b3f, 0, { metal: 0.1, rough: 0.8 });
+
+    // Main IC
+    part(new THREE.BoxGeometry(1.1, 0.16, 1.1), 0x14171c, 0.13, { metal: 0.4, rough: 0.5 });
+
+    // Capacitor bank
+    const caps = new THREE.Group();
+    const capMat = new THREE.MeshStandardMaterial({
+      color: 0x3c4450,
+      metalness: 0.8,
+      roughness: 0.3,
+    });
+    for (let i = 0; i < 4; i++) {
+      const cap = new THREE.Mesh(new THREE.CylinderGeometry(0.19, 0.19, 0.5, 20), capMat);
+      cap.position.set(-1.35 + i * 0.5, 0.3, 0.95);
+      caps.add(cap);
+    }
+    root.add(caps);
+
+    // Connector header
+    part(new THREE.BoxGeometry(1.5, 0.22, 0.3), accent, 0.16);
+
+    // Top cover
+    const cover = new THREE.Mesh(
+      new THREE.BoxGeometry(4.4, 0.14, 3.2),
+      new THREE.MeshStandardMaterial({ color: 0x353c46, metalness: 0.5, roughness: 0.45 })
+    );
+    cover.position.y = 1.15;
+    root.add(cover);
+
+    return root;
+  }
+
+  async function init(el: HTMLElement): Promise<Viewer | null> {
+    const canvas = el.querySelector('canvas') as HTMLCanvasElement | null;
+    const status = el.querySelector('[data-status]') as HTMLElement | null;
+    const statusText = el.querySelector('[data-status-text]') as HTMLElement | null;
+    const hud = el.querySelector('[data-hud]') as HTMLElement | null;
+    const hint = el.querySelector('[data-hint]') as HTMLElement | null;
+    const slider = el.querySelector('[data-explode-input]') as HTMLInputElement | null;
+    const resetBtn = el.querySelector('[data-reset]') as HTMLButtonElement | null;
+    if (!canvas) return null;
+
+    const fail = (msg: string) => {
+      if (status) status.dataset.error = '';
+      if (statusText) statusText.textContent = msg;
+    };
+
+    let THREE: typeof THREE_NS;
+    let OrbitControls: typeof import('three/examples/jsm/controls/OrbitControls.js')['OrbitControls'];
+    try {
+      [THREE, { OrbitControls }] = await Promise.all([
+        import('three'),
+        import('three/examples/jsm/controls/OrbitControls.js'),
+      ]);
+    } catch {
+      fail('3D view unavailable');
+      return null;
+    }
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'low-power',
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(el.clientWidth, canvas.clientHeight, false);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 200);
+
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x202830, 1.5));
+    const key = new THREE.DirectionalLight(0xffffff, 2.1);
+    key.position.set(4, 7, 5);
+    scene.add(key);
+    const rim = new THREE.DirectionalLight(0xff9f45, 0.9);
+    rim.position.set(-5, 2, -4);
+    scene.add(rim);
+
+    // --- load content ------------------------------------------------------
+    const src = el.dataset.src;
+    let root: THREE_NS.Object3D;
+
+    if (src) {
+      try {
+        const { GLTFLoader } = await import('three/examples/jsm/loaders/GLTFLoader.js');
+        const gltf = await new GLTFLoader().loadAsync(src);
+        root = gltf.scene;
+      } catch {
+        fail('Could not load model');
+        renderer.dispose();
+        return null;
+      }
+    } else {
+      root = buildDemoAssembly(THREE);
+    }
+
+    scene.add(root);
+
+    // --- frame it ----------------------------------------------------------
+    const box = new THREE.Box3().setFromObject(root);
+    const size = box.getSize(new THREE.Vector3());
+    const center = box.getCenter(new THREE.Vector3());
+    const radius = Math.max(size.x, size.y, size.z) || 1;
+
+    root.position.sub(center);
+    root.position.y += Number(el.dataset.yOffset ?? 0);
+
+    const dist = radius * 2.3;
+    const home = new THREE.Vector3(dist * 0.75, dist * 0.5, dist * 0.85);
+    camera.position.copy(home);
+    camera.lookAt(0, 0, 0);
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.enablePan = false;
+    controls.minDistance = radius * 0.9;
+    // Headroom for the dolly-out that accompanies a full explode.
+    controls.maxDistance = radius * 8;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.7;
+
+    // Stop the idle spin as soon as the user takes over.
+    controls.addEventListener('start', () => {
+      controls.autoRotate = false;
+      if (hint) hint.hidden = true;
+    });
+
+    // --- explode -----------------------------------------------------------
+    // Each top-level child moves away from the assembly centre along the
+    // direction of its own centroid — the model-agnostic approach, so exported
+    // CAD explodes sensibly without per-model tuning.
+    //
+    // Parts sitting near the centre have no meaningful radial direction (their
+    // offset is mostly noise), so they fall back to the stacking axis, ordered
+    // by height. That keeps a board-and-cover stack separating in the order it
+    // is actually assembled instead of scattering.
+    const assemblyCenter = box.getCenter(new THREE.Vector3());
+
+    const measured = root.children.map((child) => {
+      const cCenter = new THREE.Box3().setFromObject(child).getCenter(new THREE.Vector3());
+      return { child, home: child.position.clone(), offset: cCenter.clone().sub(assemblyCenter) };
+    });
+
+    // Rank by height so centre parts can be fanned along the stack axis.
+    const byHeight = [...measured].sort((a, b) => a.offset.y - b.offset.y);
+    const mid = (byHeight.length - 1) / 2;
+
+    const parts = measured.map((m) => {
+      const dir = m.offset.clone();
+      if (dir.length() < radius * 0.12) {
+        const rank = byHeight.indexOf(m);
+        dir.set(0, rank - mid || 1, 0);
+      }
+      return { child: m.child, home: m.home, dir: dir.normalize() };
+    });
+
+    const amount = Number(el.dataset.explode ?? 1.6);
+    const homeDist = camera.position.length();
+
+    const applyExplode = (t: number) => {
+      for (const p of parts) {
+        p.child.position.copy(p.home).addScaledVector(p.dir, t * amount * radius * 0.22);
+      }
+      // Pull the camera back as things spread out, otherwise a fully exploded
+      // assembly walks straight out of frame.
+      camera.position.setLength(homeDist * (1 + t * 0.55));
+    };
+
+    slider?.addEventListener('input', () => {
+      applyExplode(Number(slider.value) / 100);
+      controls.autoRotate = false;
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      if (slider) slider.value = '0';
+      applyExplode(0);
+      camera.position.copy(home);
+      controls.target.set(0, 0, 0);
+      controls.update();
+    });
+
+    // --- resize ------------------------------------------------------------
+    const resize = () => {
+      const w = el.clientWidth;
+      const h = canvas.clientHeight || 400;
+      if (w === 0 || h === 0) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+    const ro = new ResizeObserver(resize);
+    ro.observe(el);
+    resize();
+
+    // --- loop --------------------------------------------------------------
+    // Pause rendering whenever the viewer is off screen; an idle WebGL loop on
+    // a long project page is a pointless battery drain.
+    let running = true;
+    let frame = 0;
+    const tick = () => {
+      frame = requestAnimationFrame(tick);
+      if (!running) return;
+      controls.update();
+      renderer.render(scene, camera);
+    };
+    tick();
+
+    const visObserver = new IntersectionObserver(
+      ([entry]) => {
+        running = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    visObserver.observe(el);
+
+    if (status) status.hidden = true;
+    if (hud) hud.hidden = false;
+    if (hint) hint.hidden = false;
+
+    return {
+      dispose() {
+        cancelAnimationFrame(frame);
+        ro.disconnect();
+        visObserver.disconnect();
+        controls.dispose();
+        renderer.dispose();
+      },
+    };
+  }
+
+  // Only spin up a viewer once it is close to the viewport.
+  const viewers = document.querySelectorAll<HTMLElement>('.model-viewer');
+  if (viewers.length) {
+    const io = new IntersectionObserver(
+      (entries, obs) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          obs.unobserve(entry.target);
+          init(entry.target as HTMLElement);
+        }
+      },
+      { rootMargin: '250px' }
+    );
+    viewers.forEach((v) => io.observe(v));
+  }
+</script>

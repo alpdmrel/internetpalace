@@ -1,0 +1,24 @@
+{
+  "name": "internetpalace",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio site of Şekip Alp Demirel — hardware, embedded and manufacturing engineering.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "figures": "python scripts/extract_figures.py"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.2",
+    "sharp": "^0.35.4",
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "@types/three": "^0.186.0"
+  }
+}

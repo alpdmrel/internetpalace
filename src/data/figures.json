@@ -1,0 +1,193 @@
+{
+  "hydroponic-automation": [
+    {
+      "number": 1,
+      "title": "Full system diagram",
+      "explanation": "The complete architecture. Three field units — two ESP32s for sensing and actuation, an ESP8266 for lighting, plus a fourth node for light measurement — report over the LAN to a Raspberry Pi 4 that holds the database, the automations and the user interface. Keeping control on the Pi and measurement at the edge means a single node can fail without stopping the loop.",
+      "src": "/figures/hydroponic-automation/01.webp",
+      "thumb": "/figures/hydroponic-automation/01.thumb.webp",
+      "width": 1299,
+      "height": 926
+    },
+    {
+      "number": 2,
+      "title": "Types of hydroponic system",
+      "explanation": "The six growing methods surveyed before choosing one — nutrient film, deep water culture, ebb and flow, drip, aeroponics and the conventional variant. Each places different demands on the controller.",
+      "src": "/figures/hydroponic-automation/02.webp",
+      "thumb": "/figures/hydroponic-automation/02.thumb.webp",
+      "width": 1080,
+      "height": 606
+    },
+    {
+      "number": 3,
+      "title": "Unit 1 — sensing",
+      "explanation": "The measurement unit. pH, electrical conductivity and total dissolved solids, air and water temperature and humidity, water level, flow, leak detection, turbidity and current, over I²C and 1-Wire.",
+      "src": "/figures/hydroponic-automation/03.webp",
+      "thumb": "/figures/hydroponic-automation/03.thumb.webp",
+      "width": 1299,
+      "height": 767
+    },
+    {
+      "number": 4,
+      "title": "Dallas temperature sensor",
+      "explanation": "The waterproof 1-Wire probe used for water temperature. 1-Wire lets several probes share a single data line, which matters when sensors are spread across a tank, a feed line and the air above the crop.",
+      "src": "/figures/hydroponic-automation/04.webp",
+      "thumb": "/figures/hydroponic-automation/04.thumb.webp",
+      "width": 842,
+      "height": 347
+    },
+    {
+      "number": 5,
+      "title": "Turbidity sensor — voltage against cloudiness",
+      "explanation": "The sensor's transfer curve. Turbidity indicates algae growth or particulate contamination in the nutrient solution, both of which foul the pumps.",
+      "src": "/figures/hydroponic-automation/05.webp",
+      "thumb": "/figures/hydroponic-automation/05.thumb.webp",
+      "width": 597,
+      "height": 358
+    },
+    {
+      "number": 6,
+      "title": "Unit 2 — actuation",
+      "explanation": "Relays, dosing pumps for nutrient and pH correction, the main circulation pump, air pump and ventilation fans. Scheduling the circulation pump rather than running it continuously is where most of the energy saving comes from.",
+      "src": "/figures/hydroponic-automation/06.webp",
+      "thumb": "/figures/hydroponic-automation/06.thumb.webp",
+      "width": 1405,
+      "height": 605
+    },
+    {
+      "number": 7,
+      "title": "Unit 3 — lighting",
+      "explanation": "PWM brightness control through a TIP122 Darlington. Driving the grow lights on a duty cycle rather than switching them fully on gives control over delivered light without wasting power as heat in a series resistor.",
+      "src": "/figures/hydroponic-automation/07.webp",
+      "thumb": "/figures/hydroponic-automation/07.thumb.webp",
+      "width": 1300,
+      "height": 857
+    },
+    {
+      "number": 8,
+      "title": "Light measurement",
+      "explanation": "The sensor set closing the loop on delivered light: VEML6070 for UV, TCS34725 for colour and colour temperature, and TSL2561 for illuminance.",
+      "src": "/figures/hydroponic-automation/08.webp",
+      "thumb": "/figures/hydroponic-automation/08.thumb.webp",
+      "width": 1299,
+      "height": 964
+    },
+    {
+      "number": 9,
+      "title": "Hydroponic growing pipe",
+      "explanation": "The growing channel itself, with the net-pot spacing that sets how many plants a run supports and how much root mass the flow has to feed.",
+      "src": "/figures/hydroponic-automation/09.webp",
+      "thumb": "/figures/hydroponic-automation/09.thumb.webp",
+      "width": 1220,
+      "height": 915
+    },
+    {
+      "number": 10,
+      "title": "pH solutions, A&B nutrient and dosing pumps",
+      "explanation": "The correction chemistry: pH-up and pH-down solutions plus the two-part A&B nutrient concentrate, each on its own dosing pump. A and B must be dosed separately — mixed at concentration they precipitate out of solution.",
+      "src": "/figures/hydroponic-automation/10.webp",
+      "thumb": "/figures/hydroponic-automation/10.thumb.webp",
+      "width": 1294,
+      "height": 622
+    },
+    {
+      "number": 11,
+      "title": "pH regulation algorithm",
+      "explanation": "The control loop for pH, implemented as a state machine. If the reading sits outside the configured window the matching pump runs for five seconds, then the loop waits thirty before reading again. That settle time is the whole design: dosing faster than the tank mixes is exactly how a pH controller ends up oscillating between over-corrections.",
+      "src": "/figures/hydroponic-automation/11.webp",
+      "thumb": "/figures/hydroponic-automation/11.thumb.webp",
+      "width": 1301,
+      "height": 1727
+    },
+    {
+      "number": 12,
+      "title": "A&B nutrient regulation algorithm",
+      "explanation": "Nutrient strength is controlled against electrical conductivity: EC rises as dissolved salts increase, so it stands in for concentration. A and B are dosed in a fixed ratio and the loop waits for the reading to settle.",
+      "src": "/figures/hydroponic-automation/12.webp",
+      "thumb": "/figures/hydroponic-automation/12.thumb.webp",
+      "width": 1079,
+      "height": 1558
+    },
+    {
+      "number": 13,
+      "title": "Tank water level regulation algorithm",
+      "explanation": "Level control, and the reason nutrient dosing is sequenced after it: topping up with plain water dilutes the solution, so EC has to be corrected after the level is right, never before.",
+      "src": "/figures/hydroponic-automation/13.webp",
+      "thumb": "/figures/hydroponic-automation/13.thumb.webp",
+      "width": 770,
+      "height": 1211
+    },
+    {
+      "number": 15,
+      "title": "Simulation — view 1",
+      "explanation": "The system modelled before hardware was committed, to check that the control loops behave at realistic tank volumes and dosing rates.",
+      "src": "/figures/hydroponic-automation/15.webp",
+      "thumb": "/figures/hydroponic-automation/15.thumb.webp",
+      "width": 972,
+      "height": 599
+    },
+    {
+      "number": 16,
+      "title": "Simulation — view 2",
+      "explanation": "A second simulation view covering the interaction between level, EC and pH regulation running together.",
+      "src": "/figures/hydroponic-automation/16.webp",
+      "thumb": "/figures/hydroponic-automation/16.thumb.webp",
+      "width": 830,
+      "height": 620
+    },
+    {
+      "number": 17,
+      "title": "pH sensor calibration",
+      "explanation": "Calibration against buffer solutions. A pH probe drifts as its glass membrane ages, so periodic recalibration is a maintenance requirement, not a one-off setup step.",
+      "src": "/figures/hydroponic-automation/17.webp",
+      "thumb": "/figures/hydroponic-automation/17.thumb.webp",
+      "width": 1297,
+      "height": 652
+    },
+    {
+      "number": 18,
+      "title": "Control panel — interior",
+      "explanation": "The assembled controller: supplies, relays and terminal blocks, with low-voltage signal wiring kept away from the switched mains side.",
+      "src": "/figures/hydroponic-automation/18.webp",
+      "thumb": "/figures/hydroponic-automation/18.thumb.webp",
+      "width": 1050,
+      "height": 1399
+    },
+    {
+      "number": 19,
+      "title": "Control panel — inner cover",
+      "explanation": "The inner cover, which keeps the mains section out of reach while the low-voltage side is being worked on.",
+      "src": "/figures/hydroponic-automation/19.webp",
+      "thumb": "/figures/hydroponic-automation/19.thumb.webp",
+      "width": 744,
+      "height": 992
+    },
+    {
+      "number": 20,
+      "title": "Control panel — exterior",
+      "explanation": "The finished enclosure as installed.",
+      "src": "/figures/hydroponic-automation/20.webp",
+      "thumb": "/figures/hydroponic-automation/20.thumb.webp",
+      "width": 768,
+      "height": 1024
+    },
+    {
+      "number": 21,
+      "title": "Light measurement hardware",
+      "explanation": "The light sensing head as built, positioned at canopy height where the measurement is actually meaningful.",
+      "src": "/figures/hydroponic-automation/21.webp",
+      "thumb": "/figures/hydroponic-automation/21.thumb.webp",
+      "width": 881,
+      "height": 755
+    },
+    {
+      "number": 22,
+      "title": "Water tank and measurement instruments",
+      "explanation": "The tank with the pH, EC and level instrumentation installed in the circulation path.",
+      "src": "/figures/hydroponic-automation/22.webp",
+      "thumb": "/figures/hydroponic-automation/22.thumb.webp",
+      "width": 1183,
+      "height": 886
+    }
+  ]
+}

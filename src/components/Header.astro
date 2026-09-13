@@ -1,0 +1,200 @@
+---
+import { site } from '../data/site';
+
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const links = [
+  { href: '/projects', label: 'Projects' },
+  { href: '/about', label: 'About' },
+  { href: '/lab', label: 'Lab' },
+];
+
+const isActive = (href: string) => path === href || path.startsWith(href + '/');
+---
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a href="/" class="brand" aria-label={`${site.name} — home`}>
+      <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+        <path
+          d="M8 22 L16 9 L24 22"
+          stroke="var(--accent)"
+          stroke-width="2.6"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"></path>
+        <path d="M11.5 18 H20.5" stroke="var(--accent)" stroke-width="2.6" stroke-linecap="round"
+        ></path>
+      </svg>
+      <span class="brand-text">
+        <strong>Alp Demirel</strong>
+        <span>{site.role}</span>
+      </span>
+    </a>
+
+    <nav aria-label="Main">
+      <ul>
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={isActive(l.href) ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <button id="theme-toggle" type="button" aria-label="Toggle colour theme" title="Toggle theme">
+      <svg class="i-sun" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2" fill="currentColor"></circle>
+        <g stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <path d="M12 2.6v2.2M12 19.2v2.2M2.6 12h2.2M19.2 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"
+          ></path>
+        </g>
+      </svg>
+      <svg class="i-moon" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+        <path
+          d="M20 14.2A8.2 8.2 0 0 1 9.8 4a8.4 8.4 0 1 0 10.2 10.2Z"
+          fill="currentColor"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 64px;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text);
+    margin-right: auto;
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+  }
+
+  .brand-text strong {
+    font-size: 0.97rem;
+    letter-spacing: -0.01em;
+  }
+
+  .brand-text span {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  nav ul {
+    display: flex;
+    gap: 0.3rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  nav a {
+    display: block;
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+  }
+
+  nav a:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+
+  nav a[aria-current='page'] {
+    color: var(--accent);
+    background: var(--accent-ghost);
+  }
+
+  #theme-toggle {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  #theme-toggle:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  #theme-toggle svg {
+    grid-area: 1 / 1;
+  }
+
+  /* Show the icon for the theme you would switch *to*. */
+  :global(html[data-theme='dark']) .i-sun {
+    display: block;
+  }
+  :global(html[data-theme='dark']) .i-moon {
+    display: none;
+  }
+  :global(html[data-theme='light']) .i-sun {
+    display: none;
+  }
+  :global(html[data-theme='light']) .i-moon {
+    display: block;
+  }
+
+  @media (max-width: 560px) {
+    .brand-text span {
+      display: none;
+    }
+    nav a {
+      padding: 0.4rem 0.5rem;
+      font-size: 0.72rem;
+    }
+  }
+</style>
+
+<script>
+  const btn = document.getElementById('theme-toggle');
+  btn?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try {
+      localStorage.setItem('theme', next);
+    } catch {
+      /* private mode — the theme just won't persist */
+    }
+  });
+</script>
