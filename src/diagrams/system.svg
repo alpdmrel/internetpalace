@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 500" role="img" preserveAspectRatio="xMidYMid meet"><defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6"
+        markerHeight="6" orient="auto-start-reverse">
+  <path d="M 0 1 L 9 5 L 0 9 z" class="arrowhead"/>
+</marker>
+<marker id="dot" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4">
+  <circle cx="3" cy="3" r="2.4" class="arrowhead"/>
+</marker>
+</defs><style>
+  .node rect { stroke-width: 1.25; }
+  .node text {
+    font-family: var(--dg-font, ui-sans-serif, system-ui, sans-serif);
+    font-size: 13px; fill: var(--dg-text, #e7ebf0);
+  }
+  .node rect { fill: var(--dg-neutral-fill, #1a1f27); stroke: var(--dg-neutral-stroke, #3a434f); }
+  .sensor rect { fill: var(--dg-sensor-fill, rgba(94,209,138,.13)); stroke: var(--dg-sensor-stroke, #5ed18a); }
+  .act rect    { fill: var(--dg-act-fill, rgba(255,159,69,.13));    stroke: var(--dg-act-stroke, #ff9f45); }
+  .mcu rect    { fill: var(--dg-mcu-fill, rgba(94,200,242,.13));    stroke: var(--dg-mcu-stroke, #5ec8f2); }
+  .ctrl rect   { fill: var(--dg-ctrl-fill, rgba(167,139,250,.16));  stroke: var(--dg-ctrl-stroke, #a78bfa); }
+  .mcu text, .ctrl text { font-weight: 600; }
+  .wire { fill: none; stroke: var(--dg-wire, #55606e); stroke-width: 1.4; }
+  .arrowhead { fill: var(--dg-wire, #55606e); stroke: none; }
+  .title {
+    font-family: var(--dg-mono, ui-monospace, monospace);
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    fill: var(--dg-muted, #8b94a3);
+  }
+</style><text class="title" x="16" y="26">Figure 1 — System architecture</text><g class="node mcu"><rect x="16" y="70" width="190" height="54" rx="7"/><text text-anchor="middle"><tspan x="111" y="94">Unit 1</tspan><tspan x="111" y="108">Sensing  ·  ESP32</tspan></text></g><path class="wire" d="M 206 97 H 280 V 225 H 320" marker-end="url(#arrow)"/><g class="node mcu"><rect x="16" y="170" width="190" height="54" rx="7"/><text text-anchor="middle"><tspan x="111" y="194">Unit 2</tspan><tspan x="111" y="208">Actuation  ·  ESP32</tspan></text></g><path class="wire" d="M 206 197 H 280 V 225 H 320" marker-end="url(#arrow)"/><g class="node mcu"><rect x="16" y="270" width="190" height="54" rx="7"/><text text-anchor="middle"><tspan x="111" y="294">Unit 3</tspan><tspan x="111" y="308">Lighting  ·  ESP8266</tspan></text></g><path class="wire" d="M 206 297 H 280 V 225 H 320" marker-end="url(#arrow)"/><g class="node mcu"><rect x="16" y="370" width="190" height="54" rx="7"/><text text-anchor="middle"><tspan x="111" y="394">Light Measurement</tspan><tspan x="111" y="408">ESP8266</tspan></text></g><path class="wire" d="M 206 397 H 280 V 225 H 320" marker-end="url(#arrow)"/><g class="node "><rect x="320" y="200" width="120" height="50" rx="7"/><text text-anchor="middle"><tspan x="380" y="229">Router</tspan></text></g><path class="wire" d="M 380 200 V 130 H 470" marker-end="url(#arrow)"/><g class="node "><rect x="470" y="106" width="120" height="48" rx="7"/><text text-anchor="middle"><tspan x="530" y="134">WAN</tspan></text></g><path class="wire" d="M 440 225 H 620" marker-end="url(#arrow)" marker-start="url(#dot)"/><g class="node ctrl"><rect x="620" y="76" width="344" height="404" rx="12"/><text text-anchor="middle"><tspan x="792" y="106">Main Controller</tspan><tspan x="792" y="124" style="font-size:12px;font-weight:400">Raspberry Pi 4</tspan></text></g><g class="node "><rect x="640" y="140" width="150" height="42" rx="7"/><text text-anchor="middle"><tspan x="715" y="165">LAN</tspan></text></g><g class="node "><rect x="806" y="140" width="140" height="42" rx="7"/><text text-anchor="middle"><tspan x="876" y="165">Database</tspan></text></g><path class="wire" d="M 790 161 H 806" marker-end="url(#arrow)"/><text class="title" x="640" y="212">Automations</text><g class="node act"><rect x="640" y="226" width="146" height="44" rx="6"/><text text-anchor="middle"><tspan x="713" y="252">pH balancing</tspan></text></g><g class="node act"><rect x="800" y="226" width="146" height="44" rx="6"/><text text-anchor="middle"><tspan x="873" y="252">A&amp;B nutrient dosing</tspan></text></g><g class="node act"><rect x="640" y="282" width="146" height="44" rx="6"/><text text-anchor="middle"><tspan x="713" y="308">Water level top-up</tspan></text></g><g class="node act"><rect x="800" y="282" width="146" height="44" rx="6"/><text text-anchor="middle"><tspan x="873" y="308">Leak detection</tspan></text></g><g class="node act"><rect x="640" y="338" width="146" height="44" rx="6"/><text text-anchor="middle"><tspan x="713" y="364">Enclosure temperature</tspan></text></g><g class="node act"><rect x="800" y="338" width="146" height="44" rx="6"/><text text-anchor="middle"><tspan x="873" y="364">Lighting schedule</tspan></text></g><g class="node "><rect x="640" y="412" width="306" height="46" rx="7"/><text text-anchor="middle"><tspan x="793" y="439">User interface</tspan></text></g></svg>

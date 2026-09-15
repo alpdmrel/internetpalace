@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 736 264" role="img" preserveAspectRatio="xMidYMid meet"><defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6"
+        markerHeight="6" orient="auto-start-reverse">
+  <path d="M 0 1 L 9 5 L 0 9 z" class="arrowhead"/>
+</marker>
+<marker id="dot" viewBox="0 0 6 6" refX="3" refY="3" markerWidth="4" markerHeight="4">
+  <circle cx="3" cy="3" r="2.4" class="arrowhead"/>
+</marker>
+</defs><style>
+  .node rect { stroke-width: 1.25; }
+  .node text {
+    font-family: var(--dg-font, ui-sans-serif, system-ui, sans-serif);
+    font-size: 13px; fill: var(--dg-text, #e7ebf0);
+  }
+  .node rect { fill: var(--dg-neutral-fill, #1a1f27); stroke: var(--dg-neutral-stroke, #3a434f); }
+  .sensor rect { fill: var(--dg-sensor-fill, rgba(94,209,138,.13)); stroke: var(--dg-sensor-stroke, #5ed18a); }
+  .act rect    { fill: var(--dg-act-fill, rgba(255,159,69,.13));    stroke: var(--dg-act-stroke, #ff9f45); }
+  .mcu rect    { fill: var(--dg-mcu-fill, rgba(94,200,242,.13));    stroke: var(--dg-mcu-stroke, #5ec8f2); }
+  .ctrl rect   { fill: var(--dg-ctrl-fill, rgba(167,139,250,.16));  stroke: var(--dg-ctrl-stroke, #a78bfa); }
+  .mcu text, .ctrl text { font-weight: 600; }
+  .wire { fill: none; stroke: var(--dg-wire, #55606e); stroke-width: 1.4; }
+  .arrowhead { fill: var(--dg-wire, #55606e); stroke: none; }
+  .title {
+    font-family: var(--dg-mono, ui-monospace, monospace);
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    fill: var(--dg-muted, #8b94a3);
+  }
+</style><text class="title" x="16" y="26">Figure 7 — Unit 3, lighting</text><g class="node ctrl"><rect x="542" y="30" width="178" height="52" rx="7"/><text text-anchor="middle"><tspan x="631" y="60">Main controller</tspan></text></g><path class="wire" d="M 368 124 V 56 H 542" marker-end="url(#arrow)" marker-start="url(#dot)"/><g class="node act"><rect x="16" y="124" width="178" height="52" rx="7"/><text text-anchor="middle"><tspan x="105" y="146">Control panel lamp</tspan><tspan x="105" y="162">via TIP122</tspan></text></g><path class="wire" d="M 194 150 H 248 V 186 H 302" marker-end="url(#arrow)" marker-start="url(#dot)"/><g class="node act"><rect x="16" y="196" width="178" height="52" rx="7"/><text text-anchor="middle"><tspan x="105" y="218">Grow lamp</tspan><tspan x="105" y="234">via TIP122</tspan></text></g><path class="wire" d="M 194 222 H 248 V 186 H 302" marker-end="url(#arrow)" marker-start="url(#dot)"/><g class="node sensor"><rect x="542" y="160" width="178" height="52" rx="7"/><text text-anchor="middle"><tspan x="631" y="182">INA226</tspan><tspan x="631" y="198">current · voltage</tspan></text></g><path class="wire" d="M 434 186 H 488 V 186 H 542" marker-end="url(#arrow)" marker-start="url(#dot)"/><g class="node mcu"><rect x="302" y="124" width="132" height="124" rx="7"/><text text-anchor="middle"><tspan x="368" y="190">ESP8266</tspan></text></g></svg>

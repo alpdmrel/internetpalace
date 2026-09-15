@@ -37,11 +37,26 @@ import { site, experience, education, skills } from '../data/site';
             </div>
             <span class="mono period">{job.period}</span>
           </div>
-          <ul>
-            {job.points.map((p) => (
-              <li>{p}</li>
-            ))}
-          </ul>
+          <div class:list={['job-body', { 'has-image': 'image' in job }]}>
+            <ul>
+              {job.points.map((p) => (
+                <li>{p}</li>
+              ))}
+            </ul>
+            {'image' in job && (
+              <figure class="job-figure">
+                <img
+                  src={job.image.src}
+                  alt={job.image.alt}
+                  width="800"
+                  height="800"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>{job.image.caption}</figcaption>
+              </figure>
+            )}
+          </div>
         </article>
       ))
     }
@@ -165,13 +180,50 @@ import { site, experience, education, skills } from '../data/site';
     white-space: nowrap;
   }
 
-  .job ul {
+  .job-body {
     margin-top: 1.1rem;
+  }
+
+  .job ul {
     padding-left: 1.15rem;
     display: grid;
     gap: 0.55rem;
     color: var(--text-dim);
     font-size: 0.96rem;
+    margin: 0;
+  }
+
+  .job-figure {
+    margin: 1.5rem 0 0;
+  }
+
+  .job-figure img {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .job-figure figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--text-faint);
+    line-height: 1.5;
+  }
+
+  /* Side-by-side once there is room; the photo is square so it reads best
+     capped rather than stretched to the column. */
+  @media (min-width: 860px) {
+    .job-body.has-image {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 290px);
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .job-body.has-image .job-figure {
+      margin-top: 0;
+    }
   }
 
   .job li::marker {

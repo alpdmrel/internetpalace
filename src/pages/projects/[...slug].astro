@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import type { GetStaticPaths } from 'astro';
 import Base from '../../layouts/Base.astro';
 import FigureGallery from '../../components/FigureGallery.astro';
+import SystemDiagrams from '../../components/SystemDiagrams.astro';
 import ModelViewer from '../../components/ModelViewer.astro';
 
 export const getStaticPaths = (async () => {
@@ -79,12 +80,20 @@ const next = all[i + 1];
     </div>
 
     {
+      d.figures === 'hydroponic-automation' && (
+        <div class="wrap">
+          <SystemDiagrams />
+        </div>
+      )
+    }
+
+    {
       d.figures && (
         <div class="wrap">
           <FigureGallery
             slug={d.figures}
-            heading="Diagrams and built hardware"
-            intro="Figures taken from the thesis, with the captions rewritten in English. The written document itself is in Turkish."
+            heading="Hardware and results"
+            intro="Photographs, control-flow charts and simulation output from the thesis, with the captions rewritten in English."
           />
         </div>
       )

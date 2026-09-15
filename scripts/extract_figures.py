@@ -40,21 +40,16 @@ THUMB_WIDTH = 520
 # Titles are translations of the thesis captions; the explanations are written
 # for a reader who has not read the thesis. Cover logos, 2x2 spacer pixels and
 # the low-resolution simulation-parameters screenshot are deliberately omitted.
+#
+# Figures 1, 3, 6, 7 and 8 are NOT listed here. Those are the Turkish block
+# diagrams, and they are redrawn in English as SVG by build_diagrams.py — see
+# src/components/SystemDiagrams.astro. Only photographs, screenshots and
+# already-English figures are rasterised from the PDF.
 FIGURES = [
-    (72, 1, "Full system diagram",
-     "The complete architecture. Three field units — two ESP32s for sensing and "
-     "actuation, an ESP8266 for lighting, plus a fourth node for light measurement — "
-     "report over the LAN to a Raspberry Pi 4 that holds the database, the automations "
-     "and the user interface. Keeping control on the Pi and measurement at the edge "
-     "means a single node can fail without stopping the loop."),
     (76, 2, "Types of hydroponic system",
      "The six growing methods surveyed before choosing one — nutrient film, deep "
      "water culture, ebb and flow, drip, aeroponics and the conventional variant. "
      "Each places different demands on the controller."),
-    (83, 3, "Unit 1 — sensing",
-     "The measurement unit. pH, electrical conductivity and total dissolved solids, "
-     "air and water temperature and humidity, water level, flow, leak detection, "
-     "turbidity and current, over I²C and 1-Wire."),
     (98, 4, "Dallas temperature sensor",
      "The waterproof 1-Wire probe used for water temperature. 1-Wire lets several "
      "probes share a single data line, which matters when sensors are spread across "
@@ -62,17 +57,6 @@ FIGURES = [
     (103, 5, "Turbidity sensor — voltage against cloudiness",
      "The sensor's transfer curve. Turbidity indicates algae growth or particulate "
      "contamination in the nutrient solution, both of which foul the pumps."),
-    (106, 6, "Unit 2 — actuation",
-     "Relays, dosing pumps for nutrient and pH correction, the main circulation "
-     "pump, air pump and ventilation fans. Scheduling the circulation pump rather "
-     "than running it continuously is where most of the energy saving comes from."),
-    (114, 7, "Unit 3 — lighting",
-     "PWM brightness control through a TIP122 Darlington. Driving the grow lights "
-     "on a duty cycle rather than switching them fully on gives control over "
-     "delivered light without wasting power as heat in a series resistor."),
-    (120, 8, "Light measurement",
-     "The sensor set closing the loop on delivered light: VEML6070 for UV, "
-     "TCS34725 for colour and colour temperature, and TSL2561 for illuminance."),
     (145, 9, "Hydroponic growing pipe",
      "The growing channel itself, with the net-pot spacing that sets how many "
      "plants a run supports and how much root mass the flow has to feed."),

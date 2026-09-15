@@ -1,15 +1,6 @@
 {
   "hydroponic-automation": [
     {
-      "number": 1,
-      "title": "Full system diagram",
-      "explanation": "The complete architecture. Three field units — two ESP32s for sensing and actuation, an ESP8266 for lighting, plus a fourth node for light measurement — report over the LAN to a Raspberry Pi 4 that holds the database, the automations and the user interface. Keeping control on the Pi and measurement at the edge means a single node can fail without stopping the loop.",
-      "src": "/figures/hydroponic-automation/01.webp",
-      "thumb": "/figures/hydroponic-automation/01.thumb.webp",
-      "width": 1299,
-      "height": 926
-    },
-    {
       "number": 2,
       "title": "Types of hydroponic system",
       "explanation": "The six growing methods surveyed before choosing one — nutrient film, deep water culture, ebb and flow, drip, aeroponics and the conventional variant. Each places different demands on the controller.",
@@ -17,15 +8,6 @@
       "thumb": "/figures/hydroponic-automation/02.thumb.webp",
       "width": 1080,
       "height": 606
-    },
-    {
-      "number": 3,
-      "title": "Unit 1 — sensing",
-      "explanation": "The measurement unit. pH, electrical conductivity and total dissolved solids, air and water temperature and humidity, water level, flow, leak detection, turbidity and current, over I²C and 1-Wire.",
-      "src": "/figures/hydroponic-automation/03.webp",
-      "thumb": "/figures/hydroponic-automation/03.thumb.webp",
-      "width": 1299,
-      "height": 767
     },
     {
       "number": 4,
@@ -44,33 +26,6 @@
       "thumb": "/figures/hydroponic-automation/05.thumb.webp",
       "width": 597,
       "height": 358
-    },
-    {
-      "number": 6,
-      "title": "Unit 2 — actuation",
-      "explanation": "Relays, dosing pumps for nutrient and pH correction, the main circulation pump, air pump and ventilation fans. Scheduling the circulation pump rather than running it continuously is where most of the energy saving comes from.",
-      "src": "/figures/hydroponic-automation/06.webp",
-      "thumb": "/figures/hydroponic-automation/06.thumb.webp",
-      "width": 1405,
-      "height": 605
-    },
-    {
-      "number": 7,
-      "title": "Unit 3 — lighting",
-      "explanation": "PWM brightness control through a TIP122 Darlington. Driving the grow lights on a duty cycle rather than switching them fully on gives control over delivered light without wasting power as heat in a series resistor.",
-      "src": "/figures/hydroponic-automation/07.webp",
-      "thumb": "/figures/hydroponic-automation/07.thumb.webp",
-      "width": 1300,
-      "height": 857
-    },
-    {
-      "number": 8,
-      "title": "Light measurement",
-      "explanation": "The sensor set closing the loop on delivered light: VEML6070 for UV, TCS34725 for colour and colour temperature, and TSL2561 for illuminance.",
-      "src": "/figures/hydroponic-automation/08.webp",
-      "thumb": "/figures/hydroponic-automation/08.thumb.webp",
-      "width": 1299,
-      "height": 964
     },
     {
       "number": 9,

@@ -42,6 +42,12 @@ export const experience = [
     company: 'Taika Tech',
     location: 'Espoo, Finland',
     period: '10/2023 — 09/2024',
+    image: {
+      src: '/images/taika-ring-exploded.webp',
+      alt: 'The Taika Ring taken apart — charging PCB, battery, stainless steel inner ring, motherboard and touchpad laid out side by side',
+      caption:
+        'Taika Ring, disassembled. The full-flex motherboard, the touchpad, and the DMLS-printed steel inner ring.',
+    },
     points: [
       'Reduced PCB footprint 30% and added flexibility by migrating from rigid-flex to full-flex in Altium.',
       'Increased touchpad active area 80% and accuracy 90% through a new sensor layout and IC placement.',

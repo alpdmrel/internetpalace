@@ -23,9 +23,11 @@ src/
   content.config.ts        frontmatter schema (status, tech, 3D model, …)
   data/site.ts             bio, experience, skills — the CV content
   data/figures.json        generated; captioned figures pulled from the thesis
+  diagrams/*.svg           generated; thesis block diagrams redrawn in English
   components/
     ModelViewer.astro      three.js viewer with exploded-view slider
     FigureGallery.astro    captioned figure gallery with lightbox
+    SystemDiagrams.astro   inlines the SVG diagrams, themed via CSS variables
     ProjectCard.astro
   pages/
     index.astro            home
@@ -77,6 +79,27 @@ npm run figures
 
 Generated images are committed to the repo so CI does not need access to the source drive. The
 source PDF is not published — only the figures.
+
+## Redrawing diagrams
+
+The thesis block diagrams (figures 1, 3, 6, 7 and 8) were Turkish screenshots on hard black
+backgrounds, so they are **not** extracted from the PDF. They are redrawn in English by
+`scripts/build_diagrams.py`, which emits SVG into `src/diagrams/`:
+
+```bash
+npm run diagrams
+```
+
+The generator lays out columns and routes wires arithmetically, so alignment is exact. The
+SVGs carry no colours of their own — every fill and stroke is a `var(--dg-*)` supplied by
+`SystemDiagrams.astro`, which is why they follow the light/dark theme. They are inlined into
+the page rather than loaded as `<img>`, since CSS variables do not cross an image boundary.
+
+Two things to watch when editing labels:
+
+- **No arrow glyphs** (`→`). They are missing from some sans fonts and drag the whole text run
+  into a serif fallback. Write `via TIP122` rather than `→ TIP122`.
+- Use `\n` in a label for a line break; the generator emits `tspan`s and centres them.
 
 ## Adding a 3D model
 
