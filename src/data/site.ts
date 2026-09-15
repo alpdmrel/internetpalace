@@ -24,17 +24,16 @@ export const site = {
 export const experience = [
   {
     role: 'Lead Hardware & Mechanical Engineer',
-    company: 'AQL Robotics',
+    company: 'MAKIINA',
     location: 'Tampere, Finland',
     period: '10/2024 — Present',
     points: [
-      'Designed and qualified a closed-loop BLDC motor-controller board (CAN-FD, 40 A continuous) with Kelvin-sense shunts, low-noise gate drivers and thermal-via arrays; owned schematic and controlled-impedance layout in Altium, validated with Keysight power analysis.',
-      'Produced the full electrical documentation set — schematics, BoM, stack-up, assembly drawings, DFM/DFT checklists — bringing PCBA rework below two percent at launch.',
-      'Re-architected the robotic arm around in-house gear reducers, improving modularity and readiness for mass production.',
-      'Built lightweight motor modules using SLS housings and metal gearboxes, cutting backlash while increasing rigidity.',
-      'Launched in-house BLDC motor manufacturing, from supplier sourcing to first assembly runs.',
-      'Completed 3 in-house pilot systems now approved to scale to 100 units per month.',
-      'Recruited and led engineers, ran design reviews, and directed compliance research toward CE certification.',
+      'Hardware and mechanical design lead for a robotic arm platform.',
+      'BLDC motor-controller design, from schematic and PCB layout through validation.',
+      'Electrical documentation and DFM/DFT review for production handover.',
+      'Mechanical design of motor modules and in-house gear reducers.',
+      'Brought motor manufacturing in-house, from supplier sourcing to assembly.',
+      'Led the hardware team, ran design reviews, and drove CE compliance work.',
     ],
   },
   {
