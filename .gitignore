@@ -7,3 +7,6 @@ dist/
 .env.production
 .vscode/
 __pycache__/
+
+# CVs carry a phone number and figures kept off the public site; this repo is public.
+cv/

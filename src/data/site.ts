@@ -33,6 +33,8 @@ export const experience = [
       'Electrical documentation and DFM/DFT review for production handover.',
       'Mechanical design of motor modules and in-house gear reducers.',
       'Brought motor manufacturing in-house, from supplier sourcing to assembly.',
+      'Custom cable harness design, improving wiring flexibility and redundancy across the arm.',
+      'Debugged arm control signals and BLDC driver interfaces alongside the machine-learning team, using purpose-built hardware tools.',
       'Led the hardware team, ran design reviews, and drove CE compliance work.',
     ],
   },
@@ -65,6 +67,14 @@ export const education = [
     school: 'Celal Bayar University',
     location: 'Manisa / İzmir, Turkey',
     period: 'Graduated 12/2023',
+  },
+] as const;
+
+export const volunteer = [
+  {
+    role: 'Global Business Development',
+    org: 'AIESEC',
+    period: '2019',
   },
 ] as const;
 

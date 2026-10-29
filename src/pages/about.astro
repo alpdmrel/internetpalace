@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site, experience, education, skills } from '../data/site';
+import { site, experience, education, skills, volunteer } from '../data/site';
 ---
 
 <Base
@@ -100,6 +100,18 @@ import { site, experience, education, skills } from '../data/site';
       written up in full, thesis included, over on the
       <a href="/projects/hydroponic-automation">projects page</a>.
     </p>
+
+    {
+      volunteer.map((v) => (
+        <div class="edu volunteer">
+          <div>
+            <h2>{v.role}</h2>
+            <p class="company">{v.org}</p>
+          </div>
+          <span class="mono period">{v.period}</span>
+        </div>
+      ))
+    }
   </section>
 
   <section class="wrap block cta-block">
@@ -244,6 +256,16 @@ import { site, experience, education, skills } from '../data/site';
     color: var(--text-faint);
     font-weight: 500;
     margin-bottom: 0.75rem;
+  }
+
+  .volunteer {
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .volunteer h2 {
+    font-size: 1.05rem;
   }
 
   .note {
